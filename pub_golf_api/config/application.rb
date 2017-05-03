@@ -8,8 +8,16 @@ Bundler.require(*Rails.groups)
 
 module PubGolfApi
   class Application < Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    config.to_prepare do
+      DeviseController.respond_to :html, :json
+    end
+    config.middleware.insert_before Rack::Runtime, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*',
+          headers: :any,
+          methods: [:get, :put, :post, :patch, :delete, :options]
+      end
+    end
   end
 end
